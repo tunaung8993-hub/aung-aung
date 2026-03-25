@@ -24,13 +24,14 @@ jobs:
         with:
           channel: 'stable'
 
-      - name: Get dependencies
-        working-directory: tun_vpn_free
-        run: flutter pub get
-
-      - name: Fix Gradle and Jetifier
+      - name: Fix Dependencies and Gradle
         working-directory: tun_vpn_free
         run: |
+          # Fix intl version conflict
+          sed -i 's/intl: ^0.19.0/intl: ^0.20.2/g' pubspec.yaml
+          flutter pub get
+          
+          # Fix Gradle and Jetifier
           sed -i 's/distributionUrl=.*/distributionUrl=https\:\/\/services.gradle.org\/distributions\/gradle-8.4-all.zip/g' android/gradle/wrapper/gradle-wrapper.properties
           if grep -q "android.enableJetifier" android/gradle.properties; then
             sed -i 's/android.enableJetifier=true/android.enableJetifier=false/g' android/gradle.properties
