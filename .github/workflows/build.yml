@@ -1,51 +1,32 @@
-name: Build Flutter APK
+name: Build APK
 
 on:
   push:
-    branches: [ main, master ]
-  workflow_dispatch:
+    branches: [ main ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '17'
+      - name: Checkout
+        uses: actions/checkout@v3
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'
+          flutter-version: '3.19.6'
 
-      - name: Fix Dependencies and Gradle
+      - name: Install dependencies
+        run: flutter pub get
         working-directory: tun_vpn_free
-        run: |
-          # Fix intl version conflict
-          sed -i 's/intl: ^0.19.0/intl: ^0.20.2/g' pubspec.yaml
-          flutter pub get
-          
-          # Fix Gradle and Jetifier
-          sed -i 's/distributionUrl=.*/distributionUrl=https\:\/\/services.gradle.org\/distributions\/gradle-8.4-all.zip/g' android/gradle/wrapper/gradle-wrapper.properties
-          if grep -q "android.enableJetifier" android/gradle.properties; then
-            sed -i 's/android.enableJetifier=true/android.enableJetifier=false/g' android/gradle.properties
-          else
-            echo "android.enableJetifier=false" >> android/gradle.properties
-          fi
 
       - name: Build APK
+        run: flutter build apk --release
         working-directory: tun_vpn_free
-        run: flutter build apk --release --split-per-abi
 
       - name: Upload APK
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
-          name: TunVPN-APK
-          path: tun_vpn_free/build/app/outputs/flutter-apk/*.apk
-          retention-days: 30
+          name: app-release
+          path: tun_vpn_free/build/app/outputs/flutter-apk/app-release.apk
