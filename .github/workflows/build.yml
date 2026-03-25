@@ -9,10 +9,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: tun_vpn_free
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -21,20 +17,24 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '21'        
+          java-version: '17'
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0'
           channel: 'stable'
-
-      - name: Disable Jetifier       
-        run: |
-          echo "android.enableJetifier=false" >> android/gradle.properties
 
       - name: Get dependencies
         run: flutter pub get
+
+      - name: Fix Gradle and Jetifier
+        run: |
+          sed -i 's/distributionUrl=.*/distributionUrl=https\:\/\/services.gradle.org\/distributions\/gradle-8.4-all.zip/g' android/gradle/wrapper/gradle-wrapper.properties
+          if grep -q "android.enableJetifier" android/gradle.properties; then
+            sed -i 's/android.enableJetifier=true/android.enableJetifier=false/g' android/gradle.properties
+          else
+            echo "android.enableJetifier=false" >> android/gradle.properties
+          fi
 
       - name: Build APK
         run: flutter build apk --release --split-per-abi
@@ -43,5 +43,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: TunVPN-APK
-          path: tun_vpn_free/build/app/outputs/flutter-apk/*.apk
+          path: build/app/outputs/flutter-apk/*.apk
           retention-days: 30
