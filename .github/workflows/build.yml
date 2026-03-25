@@ -25,9 +25,11 @@ jobs:
           channel: 'stable'
 
       - name: Get dependencies
+        working-directory: tun_vpn_free
         run: flutter pub get
 
       - name: Fix Gradle and Jetifier
+        working-directory: tun_vpn_free
         run: |
           sed -i 's/distributionUrl=.*/distributionUrl=https\:\/\/services.gradle.org\/distributions\/gradle-8.4-all.zip/g' android/gradle/wrapper/gradle-wrapper.properties
           if grep -q "android.enableJetifier" android/gradle.properties; then
@@ -37,11 +39,12 @@ jobs:
           fi
 
       - name: Build APK
+        working-directory: tun_vpn_free
         run: flutter build apk --release --split-per-abi
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: TunVPN-APK
-          path: build/app/outputs/flutter-apk/*.apk
+          path: tun_vpn_free/build/app/outputs/flutter-apk/*.apk
           retention-days: 30
