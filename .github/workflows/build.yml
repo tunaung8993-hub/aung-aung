@@ -1,32 +1,52 @@
-name: Build APK
+name: Build Flutter APK
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, master ]
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: tun_vpn_free
+
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'         
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.19.6'
+          flutter-version: '3.24.0'
+          channel: 'stable'
 
-      - name: Install dependencies
+      - name: Update Gradle wrapper     
+        run: |
+          cd android
+          sed -i 's|distributionUrl=.*|distributionUrl=https\://services.gradle.org/distributions/gradle-8.4-bin.zip|' gradle/wrapper/gradle-wrapper.properties
+
+      - name: Disable Jetifier
+        run: |
+          echo "android.enableJetifier=false" >> android/gradle.properties
+
+      - name: Get dependencies
         run: flutter pub get
-        working-directory: tun_vpn_free
 
       - name: Build APK
-        run: flutter build apk --release
-        working-directory: tun_vpn_free
+        run: flutter build apk --release --split-per-abi
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: app-release
-          path: tun_vpn_free/build/app/outputs/flutter-apk/app-release.apk
+          name: TunVPN-APK
+          path: tun_vpn_free/build/app/outputs/flutter-apk/*.apk
+          retention-days: 30
