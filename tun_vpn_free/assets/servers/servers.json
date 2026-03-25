@@ -1,0 +1,54 @@
+{
+  "version": "1.0",
+  "updated": "2026-03-16",
+  "servers": [
+    {
+      "id": "sg-01",
+      "country": "Singapore",
+      "city": "Singapore",
+      "flag": "🇸🇬",
+      "protocol": "VMess",
+      "configLink": "REPLACE_WITH_REAL_VMESS_LINK"
+    },
+    {
+      "id": "th-01",
+      "country": "Thailand",
+      "city": "Bangkok",
+      "flag": "🇹🇭",
+      "protocol": "VMess",
+      "configLink": "REPLACE_WITH_REAL_VMESS_LINK"
+    },
+    {
+      "id": "hk-01",
+      "country": "Hong Kong",
+      "city": "Hong Kong",
+      "flag": "🇭🇰",
+      "protocol": "VLESS",
+      "configLink": "REPLACE_WITH_REAL_VLESS_LINK"
+    },
+    {
+      "id": "jp-01",
+      "country": "Japan",
+      "city": "Tokyo",
+      "flag": "🇯🇵",
+      "protocol": "VMess",
+      "configLink": "REPLACE_WITH_REAL_VMESS_LINK"
+    },
+    {
+      "id": "us-01",
+      "country": "United States",
+      "city": "Los Angeles",
+      "flag": "🇺🇸",
+      "protocol": "VMess",
+      "configLink": "REPLACE_WITH_REAL_VMESS_LINK"
+    },
+    {
+      "id": "de-01",
+      "country": "Germany",
+      "city": "Frankfurt",
+      "flag": "🇩🇪",
+      "protocol": "VMess",
+      "configLink": "REPLACE_WITH_REAL_VMESS_LINK"
+    }
+  ]
+}
